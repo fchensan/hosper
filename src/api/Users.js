@@ -49,9 +49,8 @@ Users.createUser = async (userId, userNusnet, password) => {
         credential.user.updateProfile({
           displayName: name,
         });
-        await db.collection("users").add({
+        await db.collection("users").doc(id).set({
           displayName: name,
-          roomNumber: id,
           createdAt: new Date().toISOString(),
         });
         console.log("Account is created");
@@ -66,6 +65,36 @@ Users.createUser = async (userId, userNusnet, password) => {
       "Your email is not in our record or you have had an account already"
     );
   }
+};
+
+Users.updateDisplayName = async (userId, newName) => {
+  const id = String(userId);
+  const name = String(newName);
+
+  await db
+    .collection("users")
+    .doc(id)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        db.collection("users")
+          .where("displayName", "==", name)
+          .get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              if (doc.exists) {
+                console.log("Please choose another displayName");
+              } else {
+                db.collection("users").doc(id).update({
+                  displayName: name,
+                });
+              }
+            });
+          });
+      } else {
+        console.log("ID does not exist");
+      }
+    });
 };
 
 module.exports = Users;
