@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 
 import {Typography, Row, Col} from 'antd';
 
-import {WhispersFeed, MessageBox, Sidemenu} from './components';
+import {WhispersFeed, MessageBox, Sidemenu, LoginForm} from './components';
 import Sider from 'antd/lib/layout/Sider';
 
 import {
@@ -70,7 +70,7 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <p>login</p>
+            <LoginForm />
           </Route>
           <Route path="/home">
           <Row>
