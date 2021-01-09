@@ -2,8 +2,7 @@
 
 A web application that serves as the main platform to initiate conversation in Hall of Residence. It adopt the same principle as letter-box where user can send message to another user by using room number.
 
-![](https://i.imgur.com/d35dUgm.png)
-
+![](https://i.imgur.com/8KsD4LM.png)
 
 ## Getting Started
 
