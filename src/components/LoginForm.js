@@ -1,9 +1,16 @@
 import React from 'react';
 import {Typography, Form, Input, Button} from 'antd';
 
-const { Title } = Typography
+import {Link} from 'react-router-dom';
+
+const { Title } = Typography;
 
 class LoginForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {...props};
+    }
+
     render() {
         return (
             <div>
@@ -12,7 +19,8 @@ class LoginForm extends React.Component {
             </Title>
             <Form
                 className="message-box"
-                layout="vertical">
+                layout="vertical"
+                onFinish={this.state.onFinish}>
                 <Form.Item
                     label="Username:"
                     name="username">
@@ -24,9 +32,12 @@ class LoginForm extends React.Component {
                     <Input.Password />
                 </Form.Item>
                 <Form.Item>
+                   
                     <Button type="primary" htmlType="submit">
                         Log in
-                    </Button>
+                    </Button>    
+                
+
                 </Form.Item>
             </Form>
         </div> 

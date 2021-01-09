@@ -1,3 +1,5 @@
+import React from 'react';
+
 import logo from './logo.svg';
 import './App.css';
 import 'antd/dist/antd.css';
@@ -13,7 +15,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  useHistory,
+  Redirect
 } from "react-router-dom";
 
 const { Title } = Typography;
@@ -64,19 +68,30 @@ let testData = [
 ];
 let testCurrentUserId = 'd-104';
 
-function App() {
-  return (
+class App extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {...props};
+  }
+
+  onLogin = (values) => {
+    this.setState({username: values.username, isLoggedIn: true});
+  }
+
+  render() { return (
     <div className="App">
       <Router>
         <Switch>
           <Route exact path="/">
-            <LoginForm />
+          {this.state.isLoggedIn && <Redirect to="/home" />}
+            <LoginForm onFinish={this.onLogin}/>
           </Route>
           <Route path="/home">
           <Row>
             <Col span={4}> 
               <div style={{position: 'fixed'}}>
-                <Sidemenu username="Jack"/>
+                <Sidemenu username={this.state.username}/>
               </div>
             </Col>
             <Col span={10}>
@@ -97,7 +112,7 @@ function App() {
 
 
     </div>
-  );
+  );}
 }
 
 export default App;
