@@ -30,7 +30,7 @@ const isValidUser = async (roomId, userNusnet) => {
   return false;
 };
 
-Users.createUser = async (userId, userNusnet, password) => {
+Users.createUser = async (userId, userNusnet, password, callback) => {
   const id = String(userId);
   const nusnet = String(userNusnet);
   const name = uniqueNamesGenerator({
@@ -53,21 +53,21 @@ Users.createUser = async (userId, userNusnet, password) => {
           displayName: name,
           createdAt: new Date().toISOString(),
         });
-        console.log("Account is created");
+        return callback(null, { msg: "Account is created" });
       })
       .catch(function (error) {
         let errorMessage = error.message;
-        console.error(errorMessage);
-        console.log(error);
+        return callback(null, { msg: errorMessage });
       });
   } else {
-    console.log(
-      "Your email is not in our record or you have had an account already"
-    );
+    return callback({
+      msg: "Your email is not in our record or you have had an account already",
+      status: false,
+    });
   }
 };
 
-Users.updateDisplayName = async (userId, newName) => {
+Users.updateDisplayName = async (userId, newName, callback) => {
   const id = String(userId);
   const name = String(newName);
 
@@ -83,62 +83,83 @@ Users.updateDisplayName = async (userId, newName) => {
           .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
               if (doc.exists) {
-                console.log("Please choose another displayName");
+                return callback({
+                  msg: "Please choose another name",
+                  status: false,
+                });
               } else {
                 db.collection("users").doc(id).update({
                   displayName: name,
+                });
+                return callback({
+                  msg: "Success",
+                  status: true,
                 });
               }
             });
           });
       } else {
-        console.log("ID does not exist");
+        return callback({
+          msg: "ID DOES NOT EXIST",
+          status: false,
+        });
       }
     });
 };
 
-Users.doLogin = async (userNusnet, password) => {
+Users.doLogin = async (userNusnet, password, callback) => {
   const nusnet = String(userNusnet);
   const email = nusnet.concat("@u.nus.edu");
   await auth
     .signInWithEmailAndPassword(email, password)
     .then(() => {
-      console.log("Login successful");
-      return true;
+      return callback({
+        msg: "Login successful",
+        status: true,
+      });
     })
     .catch(function (error) {
       let errorMessage = error.message;
-      console.error(errorMessage);
-      console.log(error);
-      console.log("Login fail");
-      return false;
+      return callback({
+        msg: "Login fail",
+        status: false,
+        err: errorMessage,
+      });
     });
 };
 
-Users.doLogout = async () => {
+Users.doLogout = async (callback) => {
   await auth
     .signOut()
     .then(() => {
       console.log("Logout successful");
-      return true;
+      return callback({
+        msg: "Logout successful",
+        status: true,
+      });
     })
     .catch(function (error) {
       let errorMessage = error.message;
-      console.error(errorMessage);
-      console.log(error);
-      console.log("Logout fail");
-      return false;
+      return callback({
+        msg: "Logout fail",
+        status: false,
+        err: errorMessage,
+      });
     });
 };
 
-Users.isLoginStatus = async () => {
+Users.isLoginStatus = async (callback) => {
   await auth.onAuthStateChanged(async (user) => {
     if (user) {
-      await console.log("User is logged in");
-      return true;
+      return callback({
+        msg: "User is logged in",
+        status: true,
+      });
     } else {
-      await console.log("User is not logged in");
-      return false;
+      return callback({
+        msg: "User is not logged in",
+        status: false,
+      });
     }
   });
 };
