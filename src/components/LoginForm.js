@@ -17,6 +17,9 @@ class LoginForm extends React.Component {
             <Title level={2}>
                 Log in 
             </Title>
+            <Title level={3}>
+                Demo account: <br></br>username: d-104<br></br>password: abc123
+            </Title>
             <Form
                 className="message-box"
                 layout="vertical"

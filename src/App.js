@@ -6,7 +6,7 @@ import 'antd/dist/antd.css';
 
 
 
-import {Typography, Row, Col} from 'antd';
+import {Typography, Row, Col, Alert} from 'antd';
 
 import {WhispersFeed, MessageBox, Sidemenu, LoginForm} from './components';
 import Sider from 'antd/lib/layout/Sider';
@@ -19,6 +19,8 @@ import {
   useHistory,
   Redirect
 } from "react-router-dom";
+
+import Whispers from './api/Whispers';
 
 const { Title } = Typography;
 
@@ -72,11 +74,18 @@ class App extends React.Component {
   
   constructor(props) {
     super(props);
-    this.state = {...props};
+    this.state = {...props, whispers: []};
   }
 
   onLogin = (values) => {
-    this.setState({username: values.username, isLoggedIn: true});
+    this.setState({userId: values.username, isLoggedIn: true});
+    Whispers.getReceivedWhispers(this.state.userId, this.getData);
+  }
+
+  getData = (res) => {
+    this.setState({whispers: res});
+    this.forceUpdate();
+    console.log(this.state.whispers);
   }
 
   render() { return (
@@ -91,13 +100,13 @@ class App extends React.Component {
           <Row>
             <Col span={4}> 
               <div style={{position: 'fixed'}}>
-                <Sidemenu username={this.state.username}/>
+                <Sidemenu username={this.state.userId}/>
               </div>
             </Col>
             <Col span={10}>
               <div style={{overflow:'scroll', paddingTop: '20px'}}>
                 <Title level={3}>Whispers</Title>
-                <WhispersFeed style={{overflow:'scroll'}} whispers={testData} currentUserId={testCurrentUserId}/>
+                <WhispersFeed style={{overflow:'scroll'}} key={this.state.whispers} whispers={this.state.whispers} currentUserId={this.state.userId}/>
               </div>
             </Col>
             <Col span={10}>
