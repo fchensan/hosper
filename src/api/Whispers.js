@@ -15,7 +15,7 @@ Whispers.createWhispers = async (senderId, receiverId, content, isAnon) => {
   });
 };
 
-Whispers.getSentWhispers = async (userId) => {
+Whispers.getSentWhispers = async (userId, callback) => {
   const id = String(userId);
 
   const snapshot = await db
@@ -30,10 +30,10 @@ Whispers.getSentWhispers = async (userId) => {
     whispers.push(data);
   });
 
-  return whispers;
+  return callback(whispers);
 };
 
-Whispers.getReceivedWhispers = async (userId) => {
+Whispers.getReceivedWhispers = async (userId, callback) => {
   const id = String(userId);
 
   const snapshot = await db
@@ -48,7 +48,7 @@ Whispers.getReceivedWhispers = async (userId) => {
     whispers.push(data);
   });
 
-  return whispers;
+  return callback(whispers);
 };
 
 module.exports = Whispers;
