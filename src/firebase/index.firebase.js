@@ -1,5 +1,5 @@
 const firebase = require("firebase");
-
+// import {firebase} from 'firebase/';
 require("firebase/firestore");
 require("firebase/auth");
 
@@ -13,9 +13,9 @@ const firebaseConfig = {
   measurementId: "G-TD7DQ1WLEK",
 };
 
-firebase.initializeApp(firebaseConfig);
+firebase.default.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
-const auth = firebase.auth();
+const db = firebase.default.firestore();
+const auth = firebase.default.auth();
 
 module.exports = { firebase, db, auth };
