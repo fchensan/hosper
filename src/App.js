@@ -24,52 +24,6 @@ import Whispers from './api/Whispers';
 
 const { Title } = Typography;
 
-let testData = [
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowleasfasdfdge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledasfasge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledge from d100',
-    receiver: 'd-104'
-  },
-  {
-    sender: 'd-100',
-    isAnon: false,
-    content: 'acknowledge from d100',
-    receiver: 'd-104'
-  },
-];
-let testCurrentUserId = 'd-104';
-
 class App extends React.Component {
   
   constructor(props) {
@@ -78,29 +32,44 @@ class App extends React.Component {
   }
 
   onLogin = (values) => {
-    this.setState({userId: values.username, isLoggedIn: true});
+    this.setState({userId: values.username, isLoggedIn: true, whispers: []});
     Whispers.getReceivedWhispers(this.state.userId, this.getData);
+    Whispers.getSentWhispers(this.state.userId, this.getData);
   }
 
   getData = (res) => {
-    this.setState({whispers: res});
+    this.setState((state, props) => {
+      whispers: state.whispers.push(...res)
+    });
     this.forceUpdate();
-    console.log(this.state.whispers);
+    console.log(res);
+  }
+
+  onMessageFormFinish = (values) => {
+    Whispers.createWhispers(this.state.userId, values.to, values.message, false);
+    this.setState({whispers:[]});
+    Whispers.getReceivedWhispers(this.state.userId, this.getData);
+    Whispers.getSentWhispers(this.state.userId, this.getData); 
+  }
+
+  onLogout = () => {
+    this.setState({userId: null, isLoggedIn: false, whispers: []})
   }
 
   render() { return (
-    <div className="App">
+    <div key={this.state.isLoggedIn} className="App">
       <Router>
         <Switch>
           <Route exact path="/">
           {this.state.isLoggedIn && <Redirect to="/home" />}
+          {!this.state.isLoggedIn && <Redirect to="/" />}
             <LoginForm onFinish={this.onLogin}/>
           </Route>
           <Route path="/home">
           <Row>
             <Col span={4}> 
               <div style={{position: 'fixed'}}>
-                <Sidemenu username={this.state.userId}/>
+                <Sidemenu username={this.state.userId} onLogout={this.onLogout}/>
               </div>
             </Col>
             <Col span={10}>
@@ -111,7 +80,7 @@ class App extends React.Component {
             </Col>
             <Col span={10}>
               <div style={{position: 'fixed', paddingTop: '20px', paddingLeft: '20px', marginRight: '20px', width: '100%'}}>
-                <MessageBox />
+                <MessageBox onFormFinish={this.onMessageFormFinish}/>
               </div>
             </Col>
           </Row>

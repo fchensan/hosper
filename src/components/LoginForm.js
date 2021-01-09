@@ -13,7 +13,10 @@ class LoginForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{padding: 30}}>
+            <Title level={1}>
+                Hostel Whispers
+            </Title>
             <Title level={2}>
                 Log in 
             </Title>

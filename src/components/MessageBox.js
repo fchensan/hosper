@@ -1,6 +1,8 @@
 import React from 'react';
 import {Typography, Form, Input, Button} from 'antd';
 
+import {Whispers} from '../api/Whispers';
+
 const { Title } = Typography;
 
 class MessageBox extends React.Component {
@@ -17,11 +19,13 @@ class MessageBox extends React.Component {
             </Title>
             <Form
                 className="message-box"
-                layout="vertical">
+                layout="vertical"
+                onFinish={this.props.onFormFinish}>
                 <Form.Item
                     label="TO:"
-                    name="to">
-                    <Input />
+                    name="to"
+                    placeholder="d-100">
+                    <Input placeholder="d-100"/>
                 </Form.Item>
                 <Form.Item
                     label="MESSAGE:"
