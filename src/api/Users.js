@@ -97,4 +97,50 @@ Users.updateDisplayName = async (userId, newName) => {
     });
 };
 
+Users.doLogin = async (userNusnet, password) => {
+  const nusnet = String(userNusnet);
+  const email = nusnet.concat("@u.nus.edu");
+  await auth
+    .signInWithEmailAndPassword(email, password)
+    .then(() => {
+      console.log("Login successful");
+      return true;
+    })
+    .catch(function (error) {
+      let errorMessage = error.message;
+      console.error(errorMessage);
+      console.log(error);
+      console.log("Login fail");
+      return false;
+    });
+};
+
+Users.doLogout = async () => {
+  await auth
+    .signOut()
+    .then(() => {
+      console.log("Logout successful");
+      return true;
+    })
+    .catch(function (error) {
+      let errorMessage = error.message;
+      console.error(errorMessage);
+      console.log(error);
+      console.log("Logout fail");
+      return false;
+    });
+};
+
+Users.isLoginStatus = async () => {
+  await auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      await console.log("User is logged in");
+      return true;
+    } else {
+      await console.log("User is not logged in");
+      return false;
+    }
+  });
+};
+
 module.exports = Users;
